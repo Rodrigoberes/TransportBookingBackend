@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: transport_booking_postgres
+    environment:
+      POSTGRES_DB: transport_booking
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: transport_booking_app
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/transport_booking?sslmode=disable
+      ENVIRONMENT: development
+      JWT_SECRET: your-development-secret-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../migrations:/root/migrations:ro
+
+volumes:
+  postgres_data:
