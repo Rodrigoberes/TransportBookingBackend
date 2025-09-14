@@ -36,13 +36,26 @@ func SetupRoutes(router *gin.Engine, db *sql.DB) {
 			protected.GET("/users/:id", func(c *gin.Context) { handlers.GetUser(c, db) })
 			protected.PUT("/users/:id", func(c *gin.Context) { handlers.UpdateUser(c, db) })
 
+			// Company routes
+			protected.GET("/companies", func(c *gin.Context) { handlers.GetAllCompanies(c, db) })
+			protected.POST("/companies", func(c *gin.Context) { handlers.CreateCompany(c, db) })
+			protected.GET("/companies/:id", func(c *gin.Context) { handlers.GetCompany(c, db) })
+			protected.PUT("/companies/:id", func(c *gin.Context) { handlers.UpdateCompany(c, db) })
+			protected.DELETE("/companies/:id", func(c *gin.Context) { handlers.DeleteCompany(c, db) })
+
 			// Route routes
-			protected.GET("/routes", func(c *gin.Context) { handlers.GetRoutes(c, db) })
+			protected.GET("/routes", func(c *gin.Context) { handlers.GetAllRoutes(c, db) })
 			protected.POST("/routes", func(c *gin.Context) { handlers.CreateRoute(c, db) })
+			protected.GET("/routes/:id", func(c *gin.Context) { handlers.GetRoute(c, db) })
+			protected.PUT("/routes/:id", func(c *gin.Context) { handlers.UpdateRoute(c, db) })
+			protected.DELETE("/routes/:id", func(c *gin.Context) { handlers.DeleteRoute(c, db) })
 
 			// Booking routes
 			protected.GET("/bookings", func(c *gin.Context) { handlers.GetBookings(c, db) })
 			protected.POST("/bookings", func(c *gin.Context) { handlers.CreateBooking(c, db) })
+			protected.GET("/bookings/:id", func(c *gin.Context) { handlers.GetBooking(c, db) })
+			protected.PUT("/bookings/:id", func(c *gin.Context) { handlers.UpdateBooking(c, db) })
+			protected.DELETE("/bookings/:id", func(c *gin.Context) { handlers.DeleteBooking(c, db) })
 		}
 	}
 }
