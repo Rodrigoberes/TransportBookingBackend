@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	_ "github.com/Rodrigoberes/TransportBookingBackend/docs"
 	"github.com/Rodrigoberes/TransportBookingBackend/internal/api/routes"
 	"github.com/Rodrigoberes/TransportBookingBackend/internal/config"
 	"github.com/Rodrigoberes/TransportBookingBackend/pkg/database"
