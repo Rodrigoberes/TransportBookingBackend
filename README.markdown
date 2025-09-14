@@ -2,29 +2,44 @@
 
 This is a Go-based backend for a transport booking system, built with the Gin framework, PostgreSQL (via Supabase), Docker, and Swagger/OpenAPI 3.0 for API documentation. The project follows a clean architecture with modular components for handling authentication, bookings, routes, and user management.
 
+## Features
+
+- ✅ Clean Architecture implementation
+- ✅ PostgreSQL database with migrations
+- ✅ JWT-based authentication
+- ✅ RESTful API with Gin framework
+- ✅ Docker containerization
+- ✅ Automated testing with testify
+- ✅ CI/CD with GitHub Actions
+- ✅ Swagger/OpenAPI documentation
+- ✅ Database seeding scripts
+
 ## Project Structure
 
 ```
 transport-booking-backend/
-├── cmd/                    # Entry point for the application
-├── internal/               # Core application logic
-│   ├── api/                # HTTP handlers, middleware, and routes
-│   ├── config/             # Configuration loading
+├── cmd/server/             # Application entry point
+├── internal/
+│   ├── api/
+│   │   ├── handlers/       # HTTP handlers
+│   │   ├── middleware/     # Custom middleware
+│   │   └── routes/         # Route definitions
+│   ├── config/             # Configuration management
 │   ├── models/             # Data models
-│   ├── repository/         # Database operations
+│   ├── repository/         # Database layer
 │   ├── services/           # Business logic
-│   └── utils/              # Utility functions (JWT, password, validation)
-├── pkg/                    # External package integrations
-├── migrations/             # Database migration scripts
-├── docs/                   # API documentation (Swagger, architecture)
-├── tests/                  # Unit and integration tests
+│   └── utils/              # Utility functions
+├── pkg/database/           # Database connection
+├── migrations/             # Database migrations
+├── docs/                   # API documentation
+├── tests/                  # Test files
 ├── docker/                 # Docker configuration
-├── scripts/                # Utility scripts for migrations and seeding
+├── scripts/                # Utility scripts
 ├── .github/workflows/      # CI/CD pipelines
-├── go.mod                  # Go module dependencies
-├── go.sum                  # Dependency checksums
-├── Makefile                # Build and run commands
-└── README.md               # Project documentation
+├── go.mod
+├── go.sum
+├── Makefile
+└── README.md
 ```
 
 ## Prerequisites
