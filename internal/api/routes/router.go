@@ -29,9 +29,10 @@ func SetupRoutes(router *gin.Engine, db *sql.DB, cfg *config.Config) {
 			auth.POST("/login", func(c *gin.Context) { handlers.Login(c, db, cfg.JWTSecret) })
 		}
 
-		// Public travel search (no auth required)
+		// Public routes (no auth required)
 		v1.GET("/travels/search", func(c *gin.Context) { handlers.SearchAvailableTravels(c, db) })
 		v1.GET("/travels/seats", func(c *gin.Context) { handlers.GetAvailableSeatsForSchedule(c, db) })
+		v1.GET("/companies", func(c *gin.Context) { handlers.GetAllCompanies(c, db) })
 
 		// Protected routes
 		protected := v1.Group("/")
@@ -46,7 +47,6 @@ func SetupRoutes(router *gin.Engine, db *sql.DB, cfg *config.Config) {
 			protected.DELETE("/users/:id", func(c *gin.Context) { handlers.DeleteUser(c, db) })
 
 			// Company routes
-			protected.GET("/companies", func(c *gin.Context) { handlers.GetAllCompanies(c, db) })
 			protected.POST("/companies", func(c *gin.Context) { handlers.CreateCompany(c, db) })
 			protected.GET("/companies/:id", func(c *gin.Context) { handlers.GetCompany(c, db) })
 			protected.PUT("/companies/:id", func(c *gin.Context) { handlers.UpdateCompany(c, db) })
