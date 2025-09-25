@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: transport-booking-api
+    env: go
+    plan: free
+    buildCommand: go build -o bin/app .
+    startCommand: ./bin/app
+    envVars:
+      - key: GO_VERSION
+        value: 1.21.0
+      - key: PORT
+        value: 10000
+      # 🚨 SECURITY: Database credentials should be set via Render Dashboard
+      # Go to: Render Dashboard → Service → Environment → Add Environment Variable
+      # Key: DATABASE_URL
+      # Value: postgresql://[username]:[password]@[host]:[port]/[database]
+      #
+      # For Supabase:
+      # 1. Go to Supabase Dashboard → Settings → Database
+      # 2. Copy the "Connection pooling" URI
+      # 3. Set as environment variable in Render (NOT in this file)
+      #
+      # Example (DO NOT USE - just for reference):
+      # DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true
+
+      - key: JWT_SECRET
+        # Generate a secure random string for production
+        # Use: openssl rand -base64 32
+        value: generate-secure-random-jwt-secret-in-production
+      - key: ENVIRONMENT
+        value: production
+    healthCheckPath: /health
+    autoDeploy: true

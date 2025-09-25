@@ -25,9 +25,9 @@ func GenerateJWT(userID int, secret string) (string, error) {
 	return token.SignedString([]byte(secret))
 }
 
-func ValidateJWT(tokenString string) (*Claims, error) {
+func ValidateJWT(tokenString, secret string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte("your-secret-key"), nil // Should use config
+		return []byte(secret), nil
 	})
 
 	if err != nil {

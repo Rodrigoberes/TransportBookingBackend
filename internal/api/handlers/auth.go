@@ -44,7 +44,7 @@ func Register(c *gin.Context, db *sql.DB) {
 // @Success 200 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Router /auth/login [post]
-func Login(c *gin.Context, db *sql.DB) {
+func Login(c *gin.Context, db *sql.DB, jwtSecret string) {
 	var creds struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -55,7 +55,7 @@ func Login(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	token, err := services.AuthenticateUser(db, creds.Email, creds.Password)
+	token, err := services.AuthenticateUser(db, creds.Email, creds.Password, jwtSecret)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return

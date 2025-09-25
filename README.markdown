@@ -149,6 +149,53 @@ http://localhost:8080/swagger/index.html
 - **CI**: Configured in `.github/workflows/backend-ci.yml` for running tests on push/pull requests.
 - **Deployment**: Configured in `.github/workflows/backend-deploy.yml` (customize for your deployment target).
 
+## 🔒 Security Best Practices
+
+### 🚨 Critical Security Warning
+
+**Never commit real database credentials or secrets to version control!**
+
+### Environment Variables Setup
+
+#### For Production Deployment (Render/Railway/Heroku):
+1. **Never hardcode credentials** in `render.yaml` or any config files
+2. Set environment variables securely through your platform's dashboard:
+   - **Render**: Dashboard → Service → Environment → Add Environment Variable
+   - **Railway**: Dashboard → Project → Variables
+   - **Heroku**: `heroku config:set KEY=value`
+
+#### Required Environment Variables:
+```bash
+# Database (set via platform dashboard - NEVER in code)
+DATABASE_URL=postgresql://[username]:[password]@[host]:[port]/[database]
+
+# JWT Secret (generate securely)
+JWT_SECRET=your-secure-random-jwt-secret-here
+
+# Application
+PORT=10000
+ENVIRONMENT=production
+```
+
+#### For Supabase:
+1. Go to **Supabase Dashboard → Settings → Database**
+2. Copy the **Connection Pooling** URI (recommended for production)
+3. Set as `DATABASE_URL` in your deployment platform
+
+### Security Checklist:
+- ✅ **Environment variables** for all secrets
+- ✅ **No hardcoded credentials** in code or config files
+- ✅ **SSL/TLS enabled** for database connections
+- ✅ **Connection pooling** for production performance
+- ✅ **Regular credential rotation**
+- ✅ **Least-privilege database users**
+
+### Local Development:
+1. Copy `.env.example` to `.env` (create locally)
+2. Fill with your development credentials
+3. **Add `.env` to `.gitignore`**
+4. **Never commit `.env` to version control**
+
 ## Notes
 
 - **Supabase**: Ensure the `DATABASE_URL` matches your Supabase project's PostgreSQL connection string.

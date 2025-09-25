@@ -6,7 +6,7 @@ import (
 	"github.com/Rodrigoberes/TransportBookingBackend/internal/models"
 )
 
-func CreateBooking(db *sql.DB, booking *models.Booking) error {
+func CreateBooking(db DBInterface, booking *models.Booking) error {
 	query := `
 		INSERT INTO bookings (user_id, schedule_id, booking_code, travel_date, departure_datetime, passenger_name, passenger_document, passenger_phone, total_amount, payment_status, booking_status, payment_method, notes, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW())

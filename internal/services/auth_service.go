@@ -21,7 +21,7 @@ func RegisterUser(db *sql.DB, user *models.User) error {
 	return repository.CreateUser(db, user)
 }
 
-func AuthenticateUser(db *sql.DB, email, password string) (string, error) {
+func AuthenticateUser(db *sql.DB, email, password, jwtSecret string) (string, error) {
 	user, err := repository.GetUserByEmail(db, email)
 	if err != nil {
 		return "", err
@@ -32,7 +32,7 @@ func AuthenticateUser(db *sql.DB, email, password string) (string, error) {
 	}
 
 	// Generate JWT token
-	token, err := utils.GenerateJWT(user.ID, "your-secret-key") // Should use config
+	token, err := utils.GenerateJWT(user.ID, jwtSecret)
 	if err != nil {
 		return "", err
 	}

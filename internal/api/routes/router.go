@@ -5,10 +5,11 @@ import (
 
 	"github.com/Rodrigoberes/TransportBookingBackend/internal/api/handlers"
 	"github.com/Rodrigoberes/TransportBookingBackend/internal/api/middleware"
+	"github.com/Rodrigoberes/TransportBookingBackend/internal/config"
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(router *gin.Engine, db *sql.DB) {
+func SetupRoutes(router *gin.Engine, db *sql.DB, cfg *config.Config) {
 	// Middleware
 	router.Use(middleware.CORS())
 	router.Use(middleware.Logger())
@@ -25,16 +26,24 @@ func SetupRoutes(router *gin.Engine, db *sql.DB) {
 		auth := v1.Group("/auth")
 		{
 			auth.POST("/register", func(c *gin.Context) { handlers.Register(c, db) })
-			auth.POST("/login", func(c *gin.Context) { handlers.Login(c, db) })
+			auth.POST("/login", func(c *gin.Context) { handlers.Login(c, db, cfg.JWTSecret) })
 		}
+
+		// Public travel search (no auth required)
+		v1.GET("/travels/search", func(c *gin.Context) { handlers.SearchAvailableTravels(c, db) })
+		v1.GET("/travels/seats", func(c *gin.Context) { handlers.GetAvailableSeatsForSchedule(c, db) })
 
 		// Protected routes
 		protected := v1.Group("/")
-		protected.Use(middleware.AuthRequired())
+		protected.Use(middleware.AuthRequired(cfg.JWTSecret))
 		{
 			// User routes
+			protected.POST("/users", func(c *gin.Context) { handlers.CreateUser(c, db) })
+			protected.GET("/users", func(c *gin.Context) { handlers.GetAllUsers(c, db) })
+			protected.GET("/users/search", func(c *gin.Context) { handlers.SearchUsers(c, db) })
 			protected.GET("/users/:id", func(c *gin.Context) { handlers.GetUser(c, db) })
 			protected.PUT("/users/:id", func(c *gin.Context) { handlers.UpdateUser(c, db) })
+			protected.DELETE("/users/:id", func(c *gin.Context) { handlers.DeleteUser(c, db) })
 
 			// Company routes
 			protected.GET("/companies", func(c *gin.Context) { handlers.GetAllCompanies(c, db) })
