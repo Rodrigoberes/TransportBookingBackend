@@ -29,42 +29,35 @@ func SetupRoutes(router *gin.Engine, db *sql.DB, cfg *config.Config) {
 			auth.POST("/login", func(c *gin.Context) { handlers.Login(c, db, cfg.JWTSecret) })
 		}
 
-		// Public routes (no auth required)
+		// All routes public (no auth required)
 		v1.GET("/travels/search", func(c *gin.Context) { handlers.SearchAvailableTravels(c, db) })
 		v1.GET("/travels/seats", func(c *gin.Context) { handlers.GetAvailableSeatsForSchedule(c, db) })
 		v1.GET("/companies", func(c *gin.Context) { handlers.GetAllCompanies(c, db) })
+		v1.POST("/companies", func(c *gin.Context) { handlers.CreateCompany(c, db) })
+		v1.GET("/companies/:id", func(c *gin.Context) { handlers.GetCompany(c, db) })
+		v1.PUT("/companies/:id", func(c *gin.Context) { handlers.UpdateCompany(c, db) })
+		v1.DELETE("/companies/:id", func(c *gin.Context) { handlers.DeleteCompany(c, db) })
 
-		// Protected routes
-		protected := v1.Group("/")
-		protected.Use(middleware.AuthRequired(cfg.JWTSecret))
-		{
-			// User routes
-			protected.POST("/users", func(c *gin.Context) { handlers.CreateUser(c, db) })
-			protected.GET("/users", func(c *gin.Context) { handlers.GetAllUsers(c, db) })
-			protected.GET("/users/search", func(c *gin.Context) { handlers.SearchUsers(c, db) })
-			protected.GET("/users/:id", func(c *gin.Context) { handlers.GetUser(c, db) })
-			protected.PUT("/users/:id", func(c *gin.Context) { handlers.UpdateUser(c, db) })
-			protected.DELETE("/users/:id", func(c *gin.Context) { handlers.DeleteUser(c, db) })
+		// Route routes
+		v1.GET("/routes", func(c *gin.Context) { handlers.GetAllRoutes(c, db) })
+		v1.POST("/routes", func(c *gin.Context) { handlers.CreateRoute(c, db) })
+		v1.GET("/routes/:id", func(c *gin.Context) { handlers.GetRoute(c, db) })
+		v1.PUT("/routes/:id", func(c *gin.Context) { handlers.UpdateRoute(c, db) })
+		v1.DELETE("/routes/:id", func(c *gin.Context) { handlers.DeleteRoute(c, db) })
 
-			// Company routes
-			protected.POST("/companies", func(c *gin.Context) { handlers.CreateCompany(c, db) })
-			protected.GET("/companies/:id", func(c *gin.Context) { handlers.GetCompany(c, db) })
-			protected.PUT("/companies/:id", func(c *gin.Context) { handlers.UpdateCompany(c, db) })
-			protected.DELETE("/companies/:id", func(c *gin.Context) { handlers.DeleteCompany(c, db) })
+		// User routes
+		v1.POST("/users", func(c *gin.Context) { handlers.CreateUser(c, db) })
+		v1.GET("/users", func(c *gin.Context) { handlers.GetAllUsers(c, db) })
+		v1.GET("/users/search", func(c *gin.Context) { handlers.SearchUsers(c, db) })
+		v1.GET("/users/:id", func(c *gin.Context) { handlers.GetUser(c, db) })
+		v1.PUT("/users/:id", func(c *gin.Context) { handlers.UpdateUser(c, db) })
+		v1.DELETE("/users/:id", func(c *gin.Context) { handlers.DeleteUser(c, db) })
 
-			// Route routes
-			protected.GET("/routes", func(c *gin.Context) { handlers.GetAllRoutes(c, db) })
-			protected.POST("/routes", func(c *gin.Context) { handlers.CreateRoute(c, db) })
-			protected.GET("/routes/:id", func(c *gin.Context) { handlers.GetRoute(c, db) })
-			protected.PUT("/routes/:id", func(c *gin.Context) { handlers.UpdateRoute(c, db) })
-			protected.DELETE("/routes/:id", func(c *gin.Context) { handlers.DeleteRoute(c, db) })
-
-			// Booking routes
-			protected.GET("/bookings", func(c *gin.Context) { handlers.GetBookings(c, db) })
-			protected.POST("/bookings", func(c *gin.Context) { handlers.CreateBooking(c, db) })
-			protected.GET("/bookings/:id", func(c *gin.Context) { handlers.GetBooking(c, db) })
-			protected.PUT("/bookings/:id", func(c *gin.Context) { handlers.UpdateBooking(c, db) })
-			protected.DELETE("/bookings/:id", func(c *gin.Context) { handlers.DeleteBooking(c, db) })
-		}
+		// Booking routes
+		v1.GET("/bookings", func(c *gin.Context) { handlers.GetBookings(c, db) })
+		v1.POST("/bookings", func(c *gin.Context) { handlers.CreateBooking(c, db) })
+		v1.GET("/bookings/:id", func(c *gin.Context) { handlers.GetBooking(c, db) })
+		v1.PUT("/bookings/:id", func(c *gin.Context) { handlers.UpdateBooking(c, db) })
+		v1.DELETE("/bookings/:id", func(c *gin.Context) { handlers.DeleteBooking(c, db) })
 	}
 }
