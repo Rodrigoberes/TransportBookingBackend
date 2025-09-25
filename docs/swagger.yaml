@@ -1,5 +1,34 @@
 basePath: /
 definitions:
+  handlers.CreateBookingRequest:
+    properties:
+      notes:
+        type: string
+      passenger_document:
+        type: string
+      passenger_name:
+        type: string
+      passenger_phone:
+        type: string
+      payment_method:
+        type: string
+      schedule_id:
+        type: integer
+      seat_ids:
+        items:
+          type: integer
+        minItems: 1
+        type: array
+      travel_date:
+        type: string
+    required:
+    - passenger_document
+    - passenger_name
+    - passenger_phone
+    - schedule_id
+    - seat_ids
+    - travel_date
+    type: object
   models.Booking:
     properties:
       booking_code:
@@ -85,6 +114,27 @@ definitions:
       updated_at:
         type: string
     type: object
+  models.Seat:
+    properties:
+      column_position:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      is_available:
+        type: boolean
+      price_modifier:
+        type: number
+      row_number:
+        type: integer
+      seat_number:
+        type: string
+      seat_type:
+        type: string
+      vehicle_id:
+        type: integer
+    type: object
   models.User:
     properties:
       created_at:
@@ -115,6 +165,36 @@ info:
   title: Transport Booking API
   version: "1.0"
 paths:
+  /api/v1/travels/search:
+    get:
+      consumes:
+      - application/json
+      description: Search for available bus travels by origin, destination, and date
+      parameters:
+      - description: Origin city
+        in: query
+        name: origin
+        type: string
+      - description: Destination city
+        in: query
+        name: destination
+        type: string
+      - description: Travel date (YYYY-MM-DD)
+        in: query
+        name: date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: object
+            type: array
+      summary: Search available bus travels
+      tags:
+      - travels
   /auth/login:
     post:
       consumes:
@@ -195,14 +275,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new booking
+      description: Create a new booking with seat selection and simulated payment
       parameters:
-      - description: Booking data
+      - description: Booking data with seat selection
         in: body
         name: booking
         required: true
         schema:
-          $ref: '#/definitions/models.Booking'
+          $ref: '#/definitions/handlers.CreateBookingRequest'
       produces:
       - application/json
       responses:
@@ -216,7 +296,13 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Create a new booking
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new booking with seat selection
       tags:
       - bookings
   /bookings/{id}:
@@ -556,7 +642,103 @@ paths:
       summary: Update route
       tags:
       - routes
+  /travels/seats:
+    get:
+      consumes:
+      - application/json
+      description: Get list of available seats for booking
+      parameters:
+      - description: Schedule ID
+        in: query
+        name: schedule_id
+        required: true
+        type: integer
+      - description: Travel date (YYYY-MM-DD)
+        in: query
+        name: travel_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Seat'
+            type: array
+      summary: Get available seats for a specific schedule and date
+      tags:
+      - travels
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Get all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new user
+      tags:
+      - users
   /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete user
+      tags:
+      - users
     get:
       consumes:
       - application/json
@@ -613,6 +795,28 @@ paths:
               type: string
             type: object
       summary: Update user
+      tags:
+      - users
+  /users/search:
+    get:
+      consumes:
+      - application/json
+      description: Search users by name or email
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Search users
       tags:
       - users
 swagger: "2.0"
