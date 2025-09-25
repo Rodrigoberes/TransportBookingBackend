@@ -17,7 +17,7 @@ import (
 // @version 1.0
 // @description API for transport booking system
 // @host localhost:8080
-// @BasePath /
+// @BasePath /api/v1
 func main() {
 	// Load configuration
 	cfg := config.Load()
